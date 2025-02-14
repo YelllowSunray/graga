@@ -1,0 +1,9 @@
+nano .gitignore
+__pycache__/
+*.pyc
+.DS_Store  # macOS specific - ignore these hidden files
+venv/
+*.egg
+
+
+
