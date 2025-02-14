@@ -16,6 +16,11 @@ class Obstacle(pygame.sprite.Sprite):
         
         image1 = pygame.image.load("graphics/Fly/Fly1.png").convert_alpha()
         image2 = pygame.image.load("graphics/Fly/Fly2.png").convert_alpha()
+        
+        # Resize images to 50x50
+        image1 = pygame.transform.scale(image1, (60, 50))
+        image2 = pygame.transform.scale(image2, (60, 50))
+        
         self.images = [image1, image2]
         self.current_image = 0
         self.image = self.images[self.current_image]
@@ -71,8 +76,11 @@ def create_obstacles(num_obstacles, speed):  # Corrected function
 class Player(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height):
         super().__init__()
-        self.image = pygame.Surface((width, height))
-        self.image.fill(BLACK)
+        #self.image = pygame.Surface((width, height))
+        #self.image.fill(BLACK)
+        self.image = pygame.image.load("graphics/Player/player_stand.png")
+        self.image = pygame.transform.scale(self.image, (50, 50))
+        
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
