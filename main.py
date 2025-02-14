@@ -3,8 +3,6 @@ import sys
 import random
 import asyncio
 
-#some extra notes
-
 # Screen dimensions (These need to be *outside* the functions)
 WIDTH, HEIGHT = 800, 600
 WHITE = (255, 255, 255)
@@ -13,21 +11,50 @@ RED = (255, 0, 0)
 
 
 class Obstacle(pygame.sprite.Sprite):
-    def __init__(self, x, y, width, height, speed):
+    def __init__(self, x, y, speed):
         super().__init__()
-        self.image = pygame.Surface((width, height))
-        self.image.fill(RED)
+        
+        image1 = pygame.image.load("graphics/Fly/Fly1.png").convert_alpha()
+        image2 = pygame.image.load("graphics/Fly/Fly2.png").convert_alpha()
+        self.images = [image1, image2]
+        self.current_image = 0
+        self.image = self.images[self.current_image]
+        
         self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
+        self.rect.topleft = (x, y)
+        
+        #self.image = pygame.Surface((width, height))
         self.speed = speed
+        self.last_image_change = pygame.time.get_ticks()  # Initialize last_image_change
+        self.image_change_delay = 100  # Initialize image_change_delay  <--- THIS WAS MISSING
 
     def update(self):
-        self.rect.x -= self.speed
-        if self.rect.right < 0:
-            self.rect.x = WIDTH
-            self.rect.y = random.randint(0, HEIGHT - self.rect.height)
-
+        # Store the current position
+        current_x = self.rect.x
+        current_y = self.rect.y
+        
+        # Move the obstacle
+        current_x -= self.speed
+        
+        # Reset position if off screen
+        if current_x + self.rect.width < 0:
+            current_x = WIDTH
+            current_y = random.randint(0, HEIGHT - self.rect.height)
+        
+        # Handle animation
+        current_time = pygame.time.get_ticks()
+        if current_time - self.last_image_change > self.image_change_delay:
+            self.current_image = (self.current_image + 1) % len(self.images)
+            self.image = self.images[self.current_image]
+            # Get new rect but maintain position
+            self.rect = self.image.get_rect()
+            self.rect.x = current_x
+            self.rect.y = current_y
+            self.last_image_change = current_time
+        else:
+            # Update position without changing rect
+            self.rect.x = current_x
+            self.rect.y = current_y
 
 def create_obstacles(num_obstacles, speed):  # Corrected function
     obstacles = pygame.sprite.Group()
@@ -36,7 +63,7 @@ def create_obstacles(num_obstacles, speed):  # Corrected function
     for i in range(num_obstacles):
         x = WIDTH + i * spacing
         y = random.randint(0, HEIGHT - 50)
-        obstacle = Obstacle(x, y, 50, 50, speed)
+        obstacle = Obstacle(x, y, speed)
         obstacles.add(obstacle)
     return obstacles
 
