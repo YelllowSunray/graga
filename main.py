@@ -3,6 +3,8 @@ import sys
 import random
 import asyncio
 
+#status
+
 # Screen dimensions (These need to be *outside* the functions)
 WIDTH, HEIGHT = 800, 600
 WHITE = (255, 255, 255)
