@@ -158,6 +158,13 @@ async def game_loop():
                     elif game_over:
                         score, passed_obstacles, obstacles = restart_game()
                         game_over = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    if not game_over:
+                        player.reverse_gravity()
+                    elif game_over:
+                        score, passed_obstacles = restart_game() # Corrected restart_game call
+                        game_over = False
 
         if not game_over:
             all_sprites.update()
